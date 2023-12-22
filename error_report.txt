@@ -1,0 +1,242 @@
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [96,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [97,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [98,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [99,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [100,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [101,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [102,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [103,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [104,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [105,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [106,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [107,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [108,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [109,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [110,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [111,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [112,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [113,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [114,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [115,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [116,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [117,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [118,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [119,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [120,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [121,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [122,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [123,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [124,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [125,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [126,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [118,0,0], thread: [127,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [32,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [33,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [34,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [35,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [36,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [37,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [38,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [39,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [40,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [41,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [42,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [43,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [44,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [45,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [46,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [47,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [48,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [49,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [50,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [51,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [52,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [53,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [54,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [55,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [56,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [57,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [58,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [59,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [60,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [61,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [62,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [74,0,0], thread: [63,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [96,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [97,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [98,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [99,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [100,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [101,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [102,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [103,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [104,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [105,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [106,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [107,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [108,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [109,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [110,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [111,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [112,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [113,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [114,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [115,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [116,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [117,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [118,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [119,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [120,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [121,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [122,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [123,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [124,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [125,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [126,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [130,0,0], thread: [127,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [64,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [65,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [66,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [67,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [68,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [69,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [70,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [71,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [72,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [73,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [74,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [75,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [76,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [77,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [78,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [79,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [80,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [81,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [82,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [83,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [84,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [85,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [86,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [87,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [88,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [89,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [90,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [91,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [92,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [93,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [94,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [4,0,0], thread: [95,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [82,0,0], thread: [0,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [82,0,0], thread: [1,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [82,0,0], thread: [2,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:94: operator(): block: [82,0,0], thread: [3,0,0] Assertion `input_val >= zero && input_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [32,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [33,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [34,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [35,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [36,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [37,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [38,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [39,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [40,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [41,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [42,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [43,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [44,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [45,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [46,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [47,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [48,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [49,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [50,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [51,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [52,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [53,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [54,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [55,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [56,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [57,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [58,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [59,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [60,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [61,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [62,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+../aten/src/ATen/native/cuda/Loss.cu:95: operator(): block: [44,0,0], thread: [63,0,0] Assertion `target_val >= zero && target_val <= one` failed.
+Loss ERROR: CUDA error: device-side assert triggered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1.
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+ERROR in training steps: CUDA error: device-side assert triggered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1.
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+  0%|          | 0/8 [00:16<?, ?it/s]
+ERROR in training steps.
+ERROR in training loop or eval/save model.
+Traceback (most recent call last):
+  File "/home/xux/WuGuang/gold-yolo/yolov6/core/engine.py", line 109, in train
+    self.train_in_loop(self.epoch)
+  File "/home/xux/WuGuang/gold-yolo/yolov6/core/engine.py", line 127, in train_in_loop
+    self.print_details()
+  File "/home/xux/WuGuang/gold-yolo/yolov6/core/engine.py", line 339, in print_details
+    self.mean_loss = (self.mean_loss * self.step + self.loss_items) / (self.step + 1)
+RuntimeError: CUDA error: device-side assert triggered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1.
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/xux/WuGuang/gold-yolo/test.py", line 5, in <module>
+    main(args)
+  File "/home/xux/WuGuang/gold-yolo/tools/train.py", line 231, in main
+    trainer.train()
+  File "/home/xux/WuGuang/gold-yolo/yolov6/core/engine.py", line 116, in train
+    self.train_after_loop()
+  File "/home/xux/WuGuang/gold-yolo/yolov6/core/engine.py", line 352, in train_after_loop
+    torch.cuda.empty_cache()
+  File "/home/xux/anaconda3/envs/gold-yolo/lib/python3.8/site-packages/torch/cuda/memory.py", line 159, in empty_cache
+    torch._C._cuda_emptyCache()
+RuntimeError: CUDA error: device-side assert triggered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1.
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+terminate called after throwing an instance of 'c10::Error'
+  what():  CUDA error: device-side assert triggered
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1.
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+
+Exception raised from c10_cuda_check_implementation at ../c10/cuda/CUDAException.cpp:44 (most recent call first):
+frame #0: c10::Error::Error(c10::SourceLocation, std::string) + 0x57 (0x7f73d5528617 in /home/xux/anaconda3/envs/gold-yolo/lib/python3.8/site-packages/torch/lib/libc10.so)
+frame #1: c10::detail::torchCheckFail(char const*, char const*, unsigned int, std::string const&) + 0x64 (0x7f73d54e398d in /home/xux/anaconda3/envs/gold-yolo/lib/python3.8/site-packages/torch/lib/libc10.so)
+frame #2: c10::cuda::c10_cuda_check_implementation(int, char const*, char const*, int, bool) + 0x118 (0x7f73d55d9118 in /home/xux/anaconda3/envs/gold-yolo/lib/python3.8/site-packages/torch/lib/libc10_cuda.so)
+frame #3: <unknown function> + 0x1198f6e (0x7f73d6839f6e in /home/xux/anaconda3/envs/gold-yolo/lib/python3.8/site-packages/torch/lib/libtorch_cuda.so)
+frame #4: <unknown function> + 0x519396 (0x7f74349cc396 in /home/xux/anaconda3/envs/gold-yolo/lib/python3.8/site-packages/torch/lib/libtorch_python.so)
+frame #5: <unknown function> + 0x55ca7 (0x7f73d550dca7 in /home/xux/anaconda3/envs/gold-yolo/lib/python3.8/site-packages/torch/lib/libc10.so)
+frame #6: c10::TensorImpl::~TensorImpl() + 0x1e3 (0x7f73d5505cb3 in /home/xux/anaconda3/envs/gold-yolo/lib/python3.8/site-packages/torch/lib/libc10.so)
+frame #7: c10::TensorImpl::~TensorImpl() + 0x9 (0x7f73d5505e49 in /home/xux/anaconda3/envs/gold-yolo/lib/python3.8/site-packages/torch/lib/libc10.so)
+frame #8: <unknown function> + 0x7c9e58 (0x7f7434c7ce58 in /home/xux/anaconda3/envs/gold-yolo/lib/python3.8/site-packages/torch/lib/libtorch_python.so)
+frame #9: THPVariable_subclass_dealloc(_object*) + 0x325 (0x7f7434c7d205 in /home/xux/anaconda3/envs/gold-yolo/lib/python3.8/site-packages/torch/lib/libtorch_python.so)
+frame #10: <unknown function> + 0x10f660 (0x55b2eed65660 in /home/xux/anaconda3/envs/gold-yolo/bin/python3)
+frame #11: <unknown function> + 0x10faf5 (0x55b2eed65af5 in /home/xux/anaconda3/envs/gold-yolo/bin/python3)
+frame #12: <unknown function> + 0x1a9727 (0x55b2eedff727 in /home/xux/anaconda3/envs/gold-yolo/bin/python3)
+frame #13: <unknown function> + 0x11076b (0x55b2eed6676b in /home/xux/anaconda3/envs/gold-yolo/bin/python3)
+frame #14: <unknown function> + 0x110059 (0x55b2eed66059 in /home/xux/anaconda3/envs/gold-yolo/bin/python3)
+frame #15: <unknown function> + 0x110043 (0x55b2eed66043 in /home/xux/anaconda3/envs/gold-yolo/bin/python3)
+frame #16: <unknown function> + 0x177ce7 (0x55b2eedcdce7 in /home/xux/anaconda3/envs/gold-yolo/bin/python3)
+frame #17: PyDict_SetItemString + 0x4c (0x55b2eedd0d8c in /home/xux/anaconda3/envs/gold-yolo/bin/python3)
+frame #18: PyImport_Cleanup + 0xaa (0x55b2eee43a2a in /home/xux/anaconda3/envs/gold-yolo/bin/python3)
+frame #19: Py_FinalizeEx + 0x79 (0x55b2eeea94c9 in /home/xux/anaconda3/envs/gold-yolo/bin/python3)
+frame #20: Py_RunMain + 0x1bc (0x55b2eeeac83c in /home/xux/anaconda3/envs/gold-yolo/bin/python3)
+frame #21: Py_BytesMain + 0x39 (0x55b2eeeacc29 in /home/xux/anaconda3/envs/gold-yolo/bin/python3)
+frame #22: __libc_start_main + 0xe7 (0x7f7461482c87 in /lib/x86_64-linux-gnu/libc.so.6)
+frame #23: <unknown function> + 0x1f9ad7 (0x55b2eee4fad7 in /home/xux/anaconda3/envs/gold-yolo/bin/python3)
+
+
+Process finished with exit code 134 (interrupted by signal 6:SIGABRT)
