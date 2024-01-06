@@ -227,39 +227,43 @@ class FocusedLinearAttention(nn.Module):
         """
         # flatten: [B, C, H, W] -> [B, C, HW]
         # transpose: [B, C, HW] -> [B, HW, C]
-        print("BCHW: ", x.shape)
-        x = x.flatten(2).transpose(1, 2)
-        B, N, C = x.shape
-        qkv = self.qkv(x).reshape(B, N, 3, C).permute(2, 0, 1, 3)
-        q, k, v = qkv.unbind(0)
-        print(
-            "\nk shape:",
-            k.shape,
-            "position encoding shape:",
-            self.positional_encoding.shape,
-        )
-        k = k + self.positional_encoding
-        focusing_factor = self.focusing_factor
+        print("BCHW: ", x.shape, x.device)
+        x = x.flatten(2).transpose(1, 2)  # [B, C, H, W] -> [B, HW, C]
+        B, N, C = get_shape(x)  # B=B, N=HW, C=C
+        qkv = self.qkv(x).reshape(B, N, 3, C).permute(2, 0, 1, 3)  # qkv [3, B, N, C]
+        q, k, v = qkv.unbind(0)  # q, k, v [B, N, C]
+        # print(
+        #     "\nk shape:",
+        #     k.shape,
+        #     "position encoding shape:",
+        #     self.positional_encoding.shape,
+        # )
+        # k = k + self.positional_encoding
+        focusing_factor = self.focusing_factor  # 3
         kernel_function = nn.ReLU()
-        q = kernel_function(q) + 1e-6
-        k = kernel_function(k) + 1e-6
+        q = kernel_function(q) + 1e-6  # q = ReLU(q)
+        k = kernel_function(k) + 1e-6  # q = ReLU(k)
         scale = nn.Softplus()(self.scale)
-        q = q / scale
-        k = k / scale
-        q_norm = q.norm(dim=-1, keepdim=True)
-        k_norm = k.norm(dim=-1, keepdim=True)
+        q = q / scale  # q = ReLU(q) / scale
+        k = k / scale  # k = ReLU(k) / scale
+        q_norm = q.norm(dim=-1, keepdim=True)  # q_norm = ||ReLU(q)/scale||
+        k_norm = k.norm(dim=-1, keepdim=True)  # k_norm = ||ReLU(k)/scale||
         if float(focusing_factor) <= 6:
-            q = q**focusing_factor
-            k = k**focusing_factor
+            q = q**focusing_factor  # q = (ReLU(q) / scale)**3
+            k = k**focusing_factor  # k = (ReLU(k) / scale)**3
         else:
             q = (q / q.max(dim=-1, keepdim=True)[0]) ** focusing_factor
             k = (k / k.max(dim=-1, keepdim=True)[0]) ** focusing_factor
+        # q = (ReLU(q) / scale)**3 / ||(ReLU(q) / scale)**3|| * ||ReLU(q)/scale||
         q = (q / q.norm(dim=-1, keepdim=True)) * q_norm
+        # k = (ReLU(k) / scale)**3 / ||(ReLU(k) / scale)**3|| * ||ReLU(k)/scale||
         k = (k / k.norm(dim=-1, keepdim=True)) * k_norm
         q, k, v = (
             rearrange(x, "b n (h c) -> (b h) n c", h=self.num_heads) for x in [q, k, v]
-        )
-        i, j, c, d = q.shape[-2], k.shape[-2], k.shape[-1], v.shape[-1]
+        )  # q, k, v [B*num_heads, N, C/num_heads]
+        print("After processing q, k, v shape: ", q.shape, v.shape, q.shape)
+        i, j, c, d = q.shape[-2], k.shape[-2], k.shape[-1], v.shape[-1]  # i = N, j = N, c = C/num_heads, d = C/num_heads
+        print("i = ", i, "j = ", j, "c = ", c, "d = ", d)
 
         z = 1 / (torch.einsum("b i c, b c -> b i", q, k.sum(dim=1)) + 1e-6)
         if i * j * (c + d) > c * d * (i + j):
@@ -278,6 +282,7 @@ class FocusedLinearAttention(nn.Module):
         x = self.proj(x)
         x = self.proj_drop(x)
         x = rearrange(x, "b (w h) c -> b c w h", b=B, c=self.dim, w=num, h=num)
+        print("final x shape: ", x.shape)
         return x
 
 
