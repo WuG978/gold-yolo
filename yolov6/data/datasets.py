@@ -470,13 +470,13 @@ class TrainValDataset(Dataset):
                 shapes[i] = [maxi, 1]
             elif mini > 1:
                 shapes[i] = [1, 1 / mini]
-        self.batch_shapes = [self.img_size, self.img_size] * batch_num
-        # self.batch_shapes = (
-        #     np.ceil(np.array(shapes) * self.img_size / self.stride + self.pad).astype(
-        #         np.int_
-        #     )
-        #     * self.stride
-        # )
+        # self.batch_shapes = [self.img_size, self.img_size] * batch_num
+        self.batch_shapes = (
+            np.ceil(np.array(shapes) * self.img_size / self.stride + self.pad).astype(
+                np.int_
+            )
+            * self.stride
+        )
 
     @staticmethod
     def check_image(im_file):
