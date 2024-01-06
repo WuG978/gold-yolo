@@ -1,4 +1,4 @@
-# Please insure that your custom_dataset are put in same parent dir with YOLOv6_DIR
+# Please ensure that your custom_dataset are put in same parent dir with YOLOv6_DIR
 train: ../datasets/pseudostem_rect_yolo/images/train # train images
 val: ../datasets/pseudostem_rect_yolo/images/val # val images
 # test: ../custom_dataset/images/test # test images (optional)
