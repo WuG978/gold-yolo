@@ -206,7 +206,7 @@ class Trainer:
             # log for tensorboard
             write_tblog(self.tblogger, self.epoch, self.evaluate_results, self.mean_loss)
             # save validation predictions to tensorboard
-            write_tbimg(self.tblogger, self.vis_imgs_list, self.epoch, type='val')
+            # write_tbimg(self.tblogger, self.vis_imgs_list, self.epoch, type='val')
     
     def eval_model(self):
         if not hasattr(self.cfg, "eval_params"):
