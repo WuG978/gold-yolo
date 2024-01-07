@@ -85,7 +85,7 @@ class Attention(torch.nn.Module):
 
     def forward(self, x):  # x (B,N,C)
         B, C, H, W = get_shape(x)
-        print("org shape x: ", get_shape(x))
+        # print("org shape x: ", get_shape(x))
 
         qq = (
             self.to_q(x)
@@ -304,26 +304,26 @@ class top_Block(nn.Module):
         self.num_heads = num_heads
         self.mlp_ratio = mlp_ratio
 
-        # self.attn = Attention(
-        #     dim,
-        #     key_dim=key_dim,
-        #     num_heads=num_heads,
-        #     attn_ratio=attn_ratio,
-        #     activation=act_layer,
-        #     norm_cfg=norm_cfg,
-        # )
-        # self.attn = SimpleLinearAttention(dim, num_heads=num_heads)
-        self.attn = FocusedLinearAttention(
+        self.attn = Attention(
             dim,
-            window_size=(10, 10),
+            key_dim=key_dim,
             num_heads=num_heads,
-            qkv_bias=True,
-            qk_scale=None,
-            attn_drop=0,
-            proj_drop=drop,
-            focusing_factor=3,
-            kernel_size=5,
+            attn_ratio=attn_ratio,
+            activation=act_layer,
+            norm_cfg=norm_cfg,
         )
+        # self.attn = SimpleLinearAttention(dim, num_heads=num_heads)
+        # self.attn = FocusedLinearAttention(
+        #     dim,
+        #     window_size=(10, 10),
+        #     num_heads=num_heads,
+        #     qkv_bias=True,
+        #     qk_scale=None,
+        #     attn_drop=0,
+        #     proj_drop=drop,
+        #     focusing_factor=3,
+        #     kernel_size=5,
+        # )
         # NOTE: drop path for stochastic depth, we shall see if this is better than dropout here
         self.drop_path = DropPath(drop_path) if drop_path > 0.0 else nn.Identity()
         mlp_hidden_dim = int(dim * mlp_ratio)
