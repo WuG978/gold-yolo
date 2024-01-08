@@ -283,14 +283,14 @@ class top_Block(nn.Module):
             norm_cfg=norm_cfg,
         )
         # self.attn = SimpleLinearAttention(dim, num_heads=num_heads)
-        self.attn = FocusedLinearAttention(
-            dim,
-            num_heads=num_heads,
-            qkv_bias=True,
-            proj_drop=drop,
-            focusing_factor=3,
-            kernel_size=5,
-        )
+        # self.attn = FocusedLinearAttention(
+        #     dim,
+        #     num_heads=num_heads,
+        #     qkv_bias=True,
+        #     proj_drop=drop,
+        #     focusing_factor=3,
+        #     kernel_size=5,
+        # )
         # NOTE: drop path for stochastic depth, we shall see if this is better than dropout here
         self.drop_path = DropPath(drop_path) if drop_path > 0.0 else nn.Identity()
         mlp_hidden_dim = int(dim * mlp_ratio)
