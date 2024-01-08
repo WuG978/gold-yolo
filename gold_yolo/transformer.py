@@ -163,40 +163,22 @@ class SimpleLinearAttention(nn.Module):
 
 
 class FocusedLinearAttention(nn.Module):
-    r"""Window based multi-head self attention (W-MSA) module with relative position bias.
-    It supports both of shifted and non-shifted window.
-
-    Args:
-        dim (int): Number of input channels.
-        window_size (tuple[int]): The height and width of the window.
-        num_heads (int): Number of attention heads.
-        qkv_bias (bool, optional):  If True, add a learnable bias to query, key, value. Default: True
-        qk_scale (float | None, optional): Override default qk scale of head_dim ** -0.5 if set
-        attn_drop (float, optional): Dropout ratio of attention weight. Default: 0.0
-        proj_drop (float, optional): Dropout ratio of output. Default: 0.0
-    """
-
     def __init__(
         self,
         dim,
-        window_size,
         num_heads,
         qkv_bias=True,
-        qk_scale=None,
-        attn_drop=0.0,
         proj_drop=0.0,
         focusing_factor=3,
         kernel_size=5,
     ):
         super().__init__()
         self.dim = dim
-        self.window_size = window_size  # Wh, Ww
         self.num_heads = num_heads
         head_dim = dim // num_heads
 
         self.focusing_factor = focusing_factor
         self.qkv = nn.Linear(dim, dim * 3, bias=qkv_bias)
-        self.attn_drop = nn.Dropout(attn_drop)
         self.proj = nn.Linear(dim, dim)
         self.proj_drop = nn.Dropout(proj_drop)
 
@@ -210,35 +192,15 @@ class FocusedLinearAttention(nn.Module):
             padding=kernel_size // 2,
         )
         self.scale = nn.Parameter(torch.zeros(size=(1, 1, dim)))
-        self.positional_encoding = nn.Parameter(
-            torch.zeros(size=(1, window_size[0] * window_size[1], dim))
-        )
-        print(
-            "Linear Attention window{} f{} kernel{}".format(
-                window_size, focusing_factor, kernel_size
-            )
-        )
 
     def forward(self, x, mask=None):
-        """
-        Args:
-            x: input features with shape of (num_windows*B, N, C)
-            mask: (0/-inf) maskr with shape of (num_windows, Wh*Ww, Wh*Ww) or None
-        """
         # flatten: [B, C, H, W] -> [B, C, HW]
         # transpose: [B, C, HW] -> [B, HW, C]
-        print("BCHW: ", x.shape, x.device)
-        x = x.flatten(2).transpose(1, 2)  # [B, C, H, W] -> [B, HW, C]
-        B, N, C = get_shape(x)  # B=B, N=HW, C=C
+        B, C, H, W = x.shape
+        N = H * W
+        x = x.flatten(2).transpose(1, 2)  # [B, C, H, W] -> [B, N, C]
         qkv = self.qkv(x).reshape(B, N, 3, C).permute(2, 0, 1, 3)  # qkv [3, B, N, C]
         q, k, v = qkv.unbind(0)  # q, k, v [B, N, C]
-        # print(
-        #     "\nk shape:",
-        #     k.shape,
-        #     "position encoding shape:",
-        #     self.positional_encoding.shape,
-        # )
-        # k = k + self.positional_encoding
         focusing_factor = self.focusing_factor  # 3
         kernel_function = nn.ReLU()
         q = kernel_function(q) + 1e-6  # q = ReLU(q)
@@ -258,18 +220,26 @@ class FocusedLinearAttention(nn.Module):
         q = (q / q.norm(dim=-1, keepdim=True)) * q_norm
         # k = (ReLU(k) / scale)**3 / ||(ReLU(k) / scale)**3|| * ||ReLU(k)/scale||
         k = (k / k.norm(dim=-1, keepdim=True)) * k_norm
+        # Rearrange Q, K, V separately to accommodate the calculation of multi-head attention
         q, k, v = (
             rearrange(x, "b n (h c) -> (b h) n c", h=self.num_heads) for x in [q, k, v]
         )  # q, k, v [B*num_heads, N, C/num_heads]
-        print("After processing q, k, v shape: ", q.shape, v.shape, q.shape)
-        i, j, c, d = q.shape[-2], k.shape[-2], k.shape[-1], v.shape[-1]  # i = N, j = N, c = C/num_heads, d = C/num_heads
-        print("i = ", i, "j = ", j, "c = ", c, "d = ", d)
-
-        z = 1 / (torch.einsum("b i c, b c -> b i", q, k.sum(dim=1)) + 1e-6)
+        
+        # i and j represent the length of the sequence (i.e., the number of attention heads) of Q and K, respectively
+        # c is the number of channels within each header (C/num_heads, where C is the number of channels of the original input)
+        # d is the number of channels of V, which is the same as c because V is the output of Q and K.
+        i, j, c, d = q.shape[-2], k.shape[-2], k.shape[-1], v.shape[-1]
+        # attention score/weight computation
+        # k.sum(dim=1): sum K in the second dimension is equivalent to averaging the keys for each head
+        # then perform a dot product with Q to obtain an attention fraction tensor z
+        z = 1 / (torch.einsum("b i c, b c -> b i", q, k.sum(dim=1)) + 1e-6)  # [B*num_heads, N]
+        
         if i * j * (c + d) > c * d * (i + j):
+            print("KV first!")
             kv = torch.einsum("b j c, b j d -> b c d", k, v)
             x = torch.einsum("b i c, b c d, b i -> b i d", q, kv, z)
         else:
+            print("QK first!")
             qk = torch.einsum("b i c, b j c -> b i j", q, k)
             x = torch.einsum("b i j, b j d, b i -> b i d", qk, v, z)
 
@@ -282,7 +252,7 @@ class FocusedLinearAttention(nn.Module):
         x = self.proj(x)
         x = self.proj_drop(x)
         x = rearrange(x, "b (w h) c -> b c w h", b=B, c=self.dim, w=num, h=num)
-        print("final x shape: ", x.shape)
+        print("Final x shape: ", x.shape)
         return x
 
 
@@ -313,17 +283,14 @@ class top_Block(nn.Module):
             norm_cfg=norm_cfg,
         )
         # self.attn = SimpleLinearAttention(dim, num_heads=num_heads)
-        # self.attn = FocusedLinearAttention(
-        #     dim,
-        #     window_size=(10, 10),
-        #     num_heads=num_heads,
-        #     qkv_bias=True,
-        #     qk_scale=None,
-        #     attn_drop=0,
-        #     proj_drop=drop,
-        #     focusing_factor=3,
-        #     kernel_size=5,
-        # )
+        self.attn = FocusedLinearAttention(
+            dim,
+            num_heads=num_heads,
+            qkv_bias=True,
+            proj_drop=drop,
+            focusing_factor=3,
+            kernel_size=5,
+        )
         # NOTE: drop path for stochastic depth, we shall see if this is better than dropout here
         self.drop_path = DropPath(drop_path) if drop_path > 0.0 else nn.Identity()
         mlp_hidden_dim = int(dim * mlp_ratio)
