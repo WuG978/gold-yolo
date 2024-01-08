@@ -194,11 +194,11 @@ class FocusedLinearAttention(nn.Module):
         self.scale = nn.Parameter(torch.zeros(size=(1, 1, dim)))
 
     def forward(self, x, mask=None):
-        # flatten: [B, C, H, W] -> [B, C, HW]
-        # transpose: [B, C, HW] -> [B, HW, C]
-        B, C, H, W = x.shape
-        N = H * W
-        x = x.flatten(2).transpose(1, 2)  # [B, C, H, W] -> [B, N, C]
+        # flatten: [B, C, W, H] -> [B, C, WH]
+        # transpose: [B, C, WH] -> [B, WH, C]
+        B, C, W, H = x.shape
+        N = W * H
+        x = x.flatten(2).transpose(1, 2)  # [B, C, W, H] -> [B, N, C]
         qkv = self.qkv(x).reshape(B, N, 3, C).permute(2, 0, 1, 3)  # qkv [3, B, N, C]
         q, k, v = qkv.unbind(0)  # q, k, v [B, N, C]
         focusing_factor = self.focusing_factor  # 3
@@ -243,15 +243,14 @@ class FocusedLinearAttention(nn.Module):
             qk = torch.einsum("b i c, b j c -> b i j", q, k)
             x = torch.einsum("b i j, b j d, b i -> b i d", qk, v, z)
 
-        num = int(v.shape[1] ** 0.5)
-        feature_map = rearrange(v, "b (w h) c -> b c w h", w=num, h=num)
+        feature_map = rearrange(v, "b (w h) c -> b c w h", w=W, h=H)
         feature_map = rearrange(self.dwc(feature_map), "b c w h -> b (w h) c")
         x = x + feature_map
 
         x = rearrange(x, "(b h) n c -> b n (h c)", h=self.num_heads)
         x = self.proj(x)
         x = self.proj_drop(x)
-        x = rearrange(x, "b (w h) c -> b c w h", b=B, c=self.dim, w=num, h=num)
+        x = rearrange(x, "b (w h) c -> b c w h", b=B, c=self.dim, w=W, h=H)
         print("Final x shape: ", x.shape)
         return x
 
