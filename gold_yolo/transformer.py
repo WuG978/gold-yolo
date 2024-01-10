@@ -83,7 +83,7 @@ class Attention(torch.nn.Module):
             activation(), Conv2d_BN(self.dh, dim, bn_weight_init=0, norm_cfg=norm_cfg)
         )
 
-    def forward(self, x):  # x (B,N,C)
+    def forward(self, x):
         B, C, H, W = get_shape(x)
         # print("org shape x: ", get_shape(x))
 
@@ -128,7 +128,9 @@ class Attention_Flatten(torch.nn.Module):
         self.to_q = Conv2d_BN(dim, nh_kd, 1, norm_cfg=norm_cfg)
         self.to_k = Conv2d_BN(dim, nh_kd, 1, norm_cfg=norm_cfg)
         self.to_v = Conv2d_BN(dim, self.dh, 1, norm_cfg=norm_cfg)
-        
+
+        self.dwc = nn.Conv2d(in_channels=int(attn_ratio*key_dim), out_channels=int(attn_ratio*key_dim), kernel_size=5, groups=num_heads, padding=5//2)
+
         self.scale = nn.Parameter(torch.zeros(size=(1, 1, nh_kd)))
 
         self.proj = torch.nn.Sequential(
@@ -136,7 +138,7 @@ class Attention_Flatten(torch.nn.Module):
         )
 
     def forward(self, x):
-        B, C, H, W = get_shape(x)
+        B, C, W, H = get_shape(x)
 
         qq = (
             self.to_q(x)
@@ -170,7 +172,7 @@ class Attention_Flatten(torch.nn.Module):
         q, k, v = (
             rearrange(x, "b n (h c) -> (b h) n c", h=self.num_heads) for x in [q, k, vv]
         )  # q, k: [B*num_heads, H*W, key_dim]; v: [B*num_heads, H*W, attn_ratio*key_dim]
-        print(q.shape, k.shape, v.shape) 
+
         # i and j represent the length of the sequence (i.e., the number of attention heads) of Q and K, respectively
         # c is the number of channels within each header (C/num_heads, where C is the number of channels of the original input)
         # d is the number of channels of V, which is the same as c because V is the output of Q and K.
@@ -178,18 +180,21 @@ class Attention_Flatten(torch.nn.Module):
         # attention score/weight computation
         # k.sum(dim=1): sum K in the second dimension is equivalent to averaging the keys for each head
         # then perform a dot product with Q to obtain an attention fraction tensor z
-        z = 1 / (torch.einsum("b i c, b c -> b i", q, k.sum(dim=1)) + 1e-6)  # [B*num_heads, N]
-        
+        z = 1 / (W * H + torch.einsum("b i c, b c -> b i", q, k.sum(dim=1)) + 1e-6)  # [B*num_heads, N]
+        # z = torch.ones((B*self.num_heads, H*W), device='cuda', requires_grad=True)
         if i * j * (c + d) > c * d * (i + j):
-            print("KV first!")
+            # print("kv: ", (j*j*(c+d))/(c*d*(i+j)))
             kv = torch.einsum("b j c, b j d -> b c d", k, v)  # [B*num_heads, key_dim, attn_ratio*key_dim]
             x = torch.einsum("b i c, b c d, b i -> b i d", q, kv, z)  # [B*num_heads, H*W, attn_ratio*key_dim]
         else:
-            print("QK first!")
             qk = torch.einsum("b i c, b j c -> b i j", q, k)  # [B*num_heads, H*W, H*W]
             x = torch.einsum("b i j, b j d, b i -> b i d", qk, v, z)  # [B*num_heads, H*W, attn_ratio*key_dim]
 
-        xx = x.permute(0, 2, 1).reshape(B, self.dh, H, W)
+        feature_map = rearrange(v, "b (w h) c -> b c w h", w=W, h=H)
+        feature_map = rearrange(self.dwc(feature_map), "b c w h -> b (w h) c")
+        x = x + feature_map
+
+        xx = x.permute(0, 2, 1).reshape(B, self.dh, W, H)
         xx = self.proj(xx)
 
         return xx
@@ -306,15 +311,7 @@ class top_Block(nn.Module):
         self.num_heads = num_heads
         self.mlp_ratio = mlp_ratio
 
-        self.attn = Attention(
-            dim,
-            key_dim=key_dim,
-            num_heads=num_heads,
-            attn_ratio=attn_ratio,
-            activation=act_layer,
-            norm_cfg=norm_cfg,
-        )
-        # self.attn = Attention_Flatten(
+        # self.attn = Attention(
         #     dim,
         #     key_dim=key_dim,
         #     num_heads=num_heads,
@@ -322,6 +319,14 @@ class top_Block(nn.Module):
         #     activation=act_layer,
         #     norm_cfg=norm_cfg,
         # )
+        self.attn = Attention_Flatten(
+            dim,
+            key_dim=key_dim,
+            num_heads=num_heads,
+            attn_ratio=attn_ratio,
+            activation=act_layer,
+            norm_cfg=norm_cfg,
+        )
         # self.attn = FocusedLinearAttention(
         #     dim,
         #     num_heads=num_heads,
