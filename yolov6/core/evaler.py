@@ -60,7 +60,8 @@ class Evaler:
         self.force_no_pad = force_no_pad
         self.not_infer_on_rect = not_infer_on_rect
         self.scale_exact = scale_exact
-        self.verbose = verbose
+        # self.verbose = verbose
+        self.verbose = True
         self.do_coco_metric = do_coco_metric
         self.do_pr_metric = do_pr_metric
         self.plot_curve = plot_curve
