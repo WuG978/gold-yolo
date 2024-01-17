@@ -33,18 +33,18 @@ def get_args_parser(add_help=True):
     )
     parser.add_argument(
         "--conf-file",
-        default="./configs/gold_yolo-n.py",
+        default="./configs/gold_yolo-l_pre.py",
         type=str,
         help="experiments description file",
     )
     parser.add_argument(
-        "--use_syncbn", action="store_true", help="whether use syncbn in training"
+        "--use_syncbn", action="store_true", default=True, help="whether use syncbn in training"
     )
     parser.add_argument(
         "--img-size", default=640, type=int, help="train, val image size (pixels)"
     )
     parser.add_argument(
-        "--batch-size", default=32, type=int, help="total batch size for all GPUs"
+        "--batch-size", default=16, type=int, help="total batch size for all GPUs"
     )
     parser.add_argument(
         "--epochs", default=400, type=int, help="number of total epochs to run"
@@ -57,7 +57,7 @@ def get_args_parser(add_help=True):
     )
     parser.add_argument(
         "--device",
-        default="cpu",
+        default="0,1",
         type=str,
         help="cuda device, i.e. 0 or 0,1,2,3 or cpu",
     )
@@ -81,11 +81,13 @@ def get_args_parser(add_help=True):
     parser.add_argument(
         "--check-images",
         action="store_true",
+        # default=True,
         help="check images when initializing datasets",
     )
     parser.add_argument(
         "--check-labels",
         action="store_true",
+        # default=True,
         help="check label files when initializing datasets",
     )
     parser.add_argument(
@@ -93,7 +95,8 @@ def get_args_parser(add_help=True):
     )
     parser.add_argument(
         "--name",
-        default="exp",
+        # default="exp",
+        default="gold_yolo-l_pre_bs16_syncbn_fuseab_linearatten",
         type=str,
         help="experiment name, saved to output_dir/name",
     )
@@ -144,11 +147,12 @@ def get_args_parser(add_help=True):
     parser.add_argument(
         "--fuse_ab",
         action="store_true",
+        default=True,
         help="fuse ab branch in training process or not",
     )
     parser.add_argument(
         "--bs_per_gpu",
-        default=32,
+        default=8,
         type=int,
         help="batch size per GPU for auto-rescale learning rate, set to 16 for P6 models",
     )
