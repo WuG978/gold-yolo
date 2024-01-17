@@ -22,7 +22,7 @@ def boolean_string(s):
 
 def get_args_parser(add_help=True):
     parser = argparse.ArgumentParser(description='YOLOv6 PyTorch Evalating', add_help=add_help)
-     parser.add_argument('--data', type=str, default='./data/custom_dataset.yaml', help='dataset.yaml path')
+    parser.add_argument('--data', type=str, default='./data/custom_dataset.yaml', help='dataset.yaml path')
     parser.add_argument('--weights', type=str, default='./runs/train/gold_yolo-l_pre_bs32_syncbn_fuseab_flatten5/weights/best_ckpt.pt', help='model.pt path(s)')
     parser.add_argument('--batch-size', type=int, default=32, help='batch size')
     parser.add_argument('--img-size', type=int, default=640, help='inference size (pixels)')
