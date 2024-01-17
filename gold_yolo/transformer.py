@@ -129,8 +129,8 @@ class Attention_Flatten(torch.nn.Module):
         self.to_k = Conv2d_BN(dim, nh_kd, 1, norm_cfg=norm_cfg)
         self.to_v = Conv2d_BN(dim, self.dh, 1, norm_cfg=norm_cfg)
 
-        # self.dwc = nn.Conv2d(in_channels=int(attn_ratio*key_dim), out_channels=int(attn_ratio*key_dim), kernel_size=5, groups=num_heads, padding=5//2)
-        self.dwc = Conv2d_BN(int(attn_ratio*key_dim), int(attn_ratio*key_dim), ks=5, groups=num_heads, pad=5//2, norm_cfg=norm_cfg)
+        # self.dwc = nn.Conv2d(in_channels=int(attn_ratio*key_dim), out_channels=int(attn_ratio*key_dim), kernel_size=3, groups=num_heads, padding=3//2)
+        # self.dwc = Conv2d_BN(int(attn_ratio*key_dim), int(attn_ratio*key_dim), ks=3, groups=num_heads, pad=3//2, norm_cfg=norm_cfg)
 
         self.scale = nn.Parameter(torch.zeros(size=(1, 1, nh_kd)))
 
@@ -145,9 +145,9 @@ class Attention_Flatten(torch.nn.Module):
             self.to_q(x)
             .reshape(B, self.num_heads * self.key_dim, H * W)
             .permute(0, 2, 1)
-        )  # [B, H*W, num_heads*key_dim]
-        kk = self.to_k(x).reshape(B, self.nu m_heads * self.key_dim, H * W).permute(0, 2, 1)  # [B, num_heads*key_dim, H*W]
-        vv = self.to_v(x).reshape(B, self.num_heads * self.d, H * W).permute(0, 2, 1)  # [B, H*W, attn_ratio*key_dim*num_heads]
+        ).contiguous()  # [B, H*W, num_heads*key_dim]
+        kk = self.to_k(x).reshape(B, self.num_heads * self.key_dim, H * W).permute(0, 2, 1).contiguous()  # [B, num_heads*key_dim, H*W]
+        vv = self.to_v(x).reshape(B, self.num_heads * self.d, H * W).permute(0, 2, 1).contiguous()  # [B, H*W, attn_ratio*key_dim*num_heads]
 
         focusing_factor = 3
         kernel_function = nn.ReLU()
@@ -182,6 +182,7 @@ class Attention_Flatten(torch.nn.Module):
         # k.sum(dim=1): sum K in the second dimension is equivalent to averaging the keys for each head
         # then perform a dot product with Q to obtain an attention fraction tensor z
         z = 1 / (W * H + torch.einsum("b i c, b c -> b i", q, k.sum(dim=1)) + 1e-6)  # [B*num_heads, N]
+        # z = 1 / (torch.einsum("b i c, b c -> b i", q, k.sum(dim=1)) + 1e-6)
         # z = torch.ones((B*self.num_heads, H*W), device='cuda', requires_grad=True)
         if i * j * (c + d) > c * d * (i + j):
             # print("kv: ", (j*j*(c+d))/(c*d*(i+j)))
@@ -191,11 +192,11 @@ class Attention_Flatten(torch.nn.Module):
             qk = torch.einsum("b i c, b j c -> b i j", q, k)  # [B*num_heads, H*W, H*W]
             x = torch.einsum("b i j, b j d, b i -> b i d", qk, v, z)  # [B*num_heads, H*W, attn_ratio*key_dim]
 
-        feature_map = rearrange(v, "b (w h) c -> b c w h", w=W, h=H)
-        feature_map = rearrange(self.dwc(feature_map), "b c w h -> b (w h) c")
-        x = x + feature_map
+        # feature_map = rearrange(v, "b (w h) c -> b c w h", w=W, h=H)
+        # feature_map = rearrange(self.dwc(feature_map), "b c w h -> b (w h) c")
+        # x = x + feature_map
 
-        xx = x.permute(0, 2, 1).reshape(B, self.dh, W, H)
+        xx = x.permute(0, 2, 1).reshape(B, self.dh, W, H).contiguous()
         xx = self.proj(xx)
 
         return xx
