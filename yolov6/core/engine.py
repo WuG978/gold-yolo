@@ -411,6 +411,9 @@ class Trainer:
             model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
         
         LOGGER.info('Model: {}'.format(model))
+        if self.main_process:
+            with open(osp.join(self.save_dir, 'model.txt'), 'a') as f:
+                print('Model: {}'.format(model), file=f)
         return model
     
     def get_teacher_model(self, args, cfg, nc, device):
