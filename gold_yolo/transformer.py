@@ -111,6 +111,7 @@ class Attention_Flatten(torch.nn.Module):
         key_dim,
         num_heads,
         attn_ratio=4,
+        kernel_size=5,
         activation=None,
         norm_cfg=dict(type="BN", requires_grad=True),
     ):
@@ -125,18 +126,20 @@ class Attention_Flatten(torch.nn.Module):
         self.dh = int(attn_ratio * key_dim) * num_heads
         self.attn_ratio = attn_ratio
 
-        self.to_q = Conv2d_BN(dim, nh_kd, 1, norm_cfg=norm_cfg)
-        self.to_k = Conv2d_BN(dim, nh_kd, 1, norm_cfg=norm_cfg)
-        self.to_v = Conv2d_BN(dim, self.dh, 1, norm_cfg=norm_cfg)
+        # self.to_q = Conv2d_BN(dim, nh_kd, 1, norm_cfg=norm_cfg)
+        # self.to_k = Conv2d_BN(dim, nh_kd, 1, norm_cfg=norm_cfg)
+        # self.to_v = Conv2d_BN(dim, self.dh, 1, norm_cfg=norm_cfg)
+        self.to_q = nn.Conv2d(dim, nh_kd, 1, bias=True)
+        self.to_k = nn.Conv2d(dim, nh_kd, 1, bias=True)
+        self.to_v = nn.Conv2d(dim, self.dh, 1, bias=True)
 
-        # self.dwc = nn.Conv2d(in_channels=int(attn_ratio*key_dim), out_channels=int(attn_ratio*key_dim), kernel_size=3, groups=num_heads, padding=3//2)
-        # self.dwc = Conv2d_BN(int(attn_ratio*key_dim), int(attn_ratio*key_dim), ks=3, groups=num_heads, pad=3//2, norm_cfg=norm_cfg)
+        self.dwc = nn.Conv2d(in_channels=int(attn_ratio*key_dim), out_channels=int(attn_ratio*key_dim), kernel_size=kernel_size, groups=num_heads, padding=kernel_size//2)
+        # self.dwc = Conv2d_BN(int(attn_ratio*key_dim), int(attn_ratio*key_dim), ks=3, groups=num_heads, pad=1, norm_cfg=norm_cfg)
 
         self.scale = nn.Parameter(torch.zeros(size=(1, 1, nh_kd)))
 
-        self.proj = torch.nn.Sequential(
-            activation(), Conv2d_BN(self.dh, dim, bn_weight_init=0, norm_cfg=norm_cfg)
-        )
+        self.proj = torch.nn.Sequential(activation(), Conv2d_BN(self.dh, dim, bn_weight_init=0, norm_cfg=norm_cfg))
+        # self.proj = nn.Conv2d(self.dh, dim,1, bias=True)
 
     def forward(self, x):
         B, C, W, H = get_shape(x)
@@ -192,105 +195,14 @@ class Attention_Flatten(torch.nn.Module):
             qk = torch.einsum("b i c, b j c -> b i j", q, k)  # [B*num_heads, H*W, H*W]
             x = torch.einsum("b i j, b j d, b i -> b i d", qk, v, z)  # [B*num_heads, H*W, attn_ratio*key_dim]
 
-        # feature_map = rearrange(v, "b (w h) c -> b c w h", w=W, h=H)
-        # feature_map = rearrange(self.dwc(feature_map), "b c w h -> b (w h) c")
-        # x = x + feature_map
+        feature_map = rearrange(v, "b (w h) c -> b c w h", w=W, h=H)
+        feature_map = rearrange(self.dwc(feature_map), "b c w h -> b (w h) c")
+        x = x + feature_map
 
         xx = x.permute(0, 2, 1).reshape(B, self.dh, W, H).contiguous()
         xx = self.proj(xx)
 
         return xx
-    
-
-class FocusedLinearAttention(nn.Module):
-    def __init__(
-        self,
-        dim,
-        num_heads,
-        qkv_bias=True,
-        proj_drop=0.0,
-        focusing_factor=3,
-        kernel_size=5,
-    ):
-        super().__init__()
-        self.dim = dim
-        self.num_heads = num_heads
-        head_dim = dim // num_heads
-
-        self.focusing_factor = focusing_factor
-        self.qkv = nn.Linear(dim, dim * 3, bias=qkv_bias)
-        self.proj = nn.Linear(dim, dim)
-        self.proj_drop = nn.Dropout(proj_drop)
-
-        self.softmax = nn.Softmax(dim=-1)
-
-        self.dwc = nn.Conv2d(
-            in_channels=head_dim,
-            out_channels=head_dim,
-            kernel_size=kernel_size,
-            groups=head_dim,
-            padding=kernel_size // 2,
-        )
-        self.scale = nn.Parameter(torch.zeros(size=(1, 1, dim)))
-
-    def forward(self, x, mask=None):
-        # flatten: [B, C, W, H] -> [B, C, WH]
-        # transpose: [B, C, WH] -> [B, WH, C]
-        B, C, W, H = x.shape
-        N = W * H
-        x = x.flatten(2).transpose(1, 2)  # [B, C, W, H] -> [B, N, C]
-        qkv = self.qkv(x).reshape(B, N, 3, C).permute(2, 0, 1, 3)  # qkv [3, B, N, C]
-        q, k, v = qkv.unbind(0)  # q, k, v [B, N, C]
-        focusing_factor = self.focusing_factor  # 3
-        kernel_function = nn.ReLU()
-        q = kernel_function(q) + 1e-6  # q = ReLU(q)
-        k = kernel_function(k) + 1e-6  # q = ReLU(k)
-        scale = nn.Softplus()(self.scale)
-        q = q / scale  # q = ReLU(q) / scale
-        k = k / scale  # k = ReLU(k) / scale
-        q_norm = q.norm(dim=-1, keepdim=True)  # q_norm = ||ReLU(q)/scale||
-        k_norm = k.norm(dim=-1, keepdim=True)  # k_norm = ||ReLU(k)/scale||
-        if float(focusing_factor) <= 6:
-            q = q**focusing_factor  # q = (ReLU(q) / scale)**3
-            k = k**focusing_factor  # k = (ReLU(k) / scale)**3
-        else:
-            q = (q / q.max(dim=-1, keepdim=True)[0]) ** focusing_factor
-            k = (k / k.max(dim=-1, keepdim=True)[0]) ** focusing_factor
-        # q = (ReLU(q) / scale)**3 / ||(ReLU(q) / scale)**3|| * ||ReLU(q)/scale||
-        q = (q / q.norm(dim=-1, keepdim=True)) * q_norm
-        # k = (ReLU(k) / scale)**3 / ||(ReLU(k) / scale)**3|| * ||ReLU(k)/scale||
-        k = (k / k.norm(dim=-1, keepdim=True)) * k_norm
-        # Rearrange Q, K, V separately to accommodate the calculation of multi-head attention
-        q, k, v = (
-            rearrange(x, "b n (h c) -> (b h) n c", h=self.num_heads) for x in [q, k, v]
-        )  # q, k, v [B*num_heads, N, C/num_heads]
-        
-        # i and j represent the length of the sequence (i.e., the number of attention heads) of Q and K, respectively
-        # c is the number of channels within each header (C/num_heads, where C is the number of channels of the original input)
-        # d is the number of channels of V, which is the same as c because V is the output of Q and K.
-        i, j, c, d = q.shape[-2], k.shape[-2], k.shape[-1], v.shape[-1]
-        # attention score/weight computation
-        # k.sum(dim=1): sum K in the second dimension is equivalent to averaging the keys for each head
-        # then perform a dot product with Q to obtain an attention fraction tensor z
-        # z = 1 / (torch.einsum("b i c, b c -> b i", q, k.sum(dim=1)) + 1e-6)  # [B*num_heads, N]
-        z = 1 / (W * H + torch.einsum("b i c, b c -> b i", q, k.sum(dim=1)) + 1e-6)
-
-        if i * j * (c + d) > c * d * (i + j):
-            kv = torch.einsum("b j c, b j d -> b c d", k, v)  # [B*num_heads, C/num_heads, C/num_heads]
-            x = torch.einsum("b i c, b c d, b i -> b i d", q, kv, z)  # [B*num_heads, N, C/num_heads]
-        else:
-            qk = torch.einsum("b i c, b j c -> b i j", q, k)  # [B*num_heads, N, N]
-            x = torch.einsum("b i j, b j d, b i -> b i d", qk, v, z)  # [B*num_heads, N, C/num_heads]
-
-        feature_map = rearrange(v, "b (w h) c -> b c w h", w=W, h=H)
-        feature_map = rearrange(self.dwc(feature_map), "b c w h -> b (w h) c")
-        x = x + feature_map
-
-        x = rearrange(x, "(b h) n c -> b n (h c)", h=self.num_heads)
-        x = self.proj(x)
-        x = self.proj_drop(x)
-        x = rearrange(x, "b (w h) c -> b c w h", b=B, c=self.dim, w=W, h=H)
-        return x
 
 
 class top_Block(nn.Module):
@@ -324,17 +236,10 @@ class top_Block(nn.Module):
             key_dim=key_dim,
             num_heads=num_heads,
             attn_ratio=attn_ratio,
+            kernel_size=3,
             activation=act_layer,
-            norm_cfg=norm_cfg,
+            norm_cfg=norm_cfg
         )
-        # self.attn = FocusedLinearAttention(
-        #     dim,
-        #     num_heads=num_heads,
-        #     qkv_bias=True,
-        #     proj_drop=drop,
-        #     focusing_factor=3,
-        #     kernel_size=5,
-        # )
         # NOTE: drop path for stochastic depth, we shall see if this is better than dropout here
         self.drop_path = DropPath(drop_path) if drop_path > 0.0 else nn.Identity()
         mlp_hidden_dim = int(dim * mlp_ratio)
