@@ -157,7 +157,8 @@ def get_args_parser(add_help=True):
         type=int,
         help="batch size per GPU for auto-rescale learning rate, set to 16 for P6 models",
     )
-    return parser
+    args = parser.parse_args()
+    return args
 
 
 def check_and_init(args):
@@ -243,5 +244,5 @@ def main(args):
 
 
 if __name__ == "__main__":
-    args = get_args_parser().parse_args()
+    args = get_args_parser()
     main(args)
