@@ -28,6 +28,9 @@ from .data_augment import (
     mosaic_augmentation,
 )
 from yolov6.utils.events import LOGGER
+import copy
+import psutil
+from multiprocessing.pool import ThreadPool
 
 # Parameters
 IMG_FORMATS = ["bmp", "jpg", "jpeg", "png", "tif", "tiff", "dng", "webp", "mpo"]
@@ -59,6 +62,7 @@ class TrainValDataset(Dataset):
         rank=-1,
         data_dict=None,
         task="train",
+        cache_ram=False,
     ):
         assert task.lower() in (
             "train",
@@ -72,6 +76,7 @@ class TrainValDataset(Dataset):
         self.task = self.task.capitalize()
         self.class_names = data_dict["names"]
         self.img_paths, self.labels = self.get_imgs_labels(self.img_dir)
+        self.cache_ram = cache_ram
         if self.rect:
             shapes = [self.img_info[p]["shape"] for p in self.img_paths]
             self.shapes = np.array(shapes, dtype=np.float64)
@@ -81,9 +86,63 @@ class TrainValDataset(Dataset):
                 np.int_
             )  # batch indices of each image
             self.sort_files_shapes()
+        if self.cache_ram:
+            self.num_imgs = len(self.img_paths)
+            self.imgs, self.imgs_hw0, self.imgs_hw = (
+                [None] * self.num_imgs,
+                [None] * self.num_imgs,
+                [None] * self.num_imgs,
+            )
+            self.cache_images(num_imgs=self.num_imgs)
         t2 = time.time()
         if self.main_process:
             LOGGER.info(f"%.1fs for dataset initialization." % (t2 - t1))
+
+    def cache_images(self, num_imgs=None):
+        assert (
+            num_imgs is not None
+        ), "num_imgs must be specified as the size of the dataset"
+
+        mem = psutil.virtual_memory()
+        mem_required = self.cal_cache_occupy(num_imgs)
+        gb = 1 << 30
+
+        if mem_required > mem.available:
+            self.cache_ram = False
+            LOGGER.warning("Not enough RAM to cache images, caching is disabled.")
+        else:
+            LOGGER.warning(
+                f"{mem_required / gb:.1f}GB RAM required, "
+                f"{mem.available / gb:.1f}/{mem.total / gb:.1f}GB RAM available, "
+                f"Since the first thing we do is cache, "
+                f"there is no guarantee that the remaining memory space is sufficient"
+            )
+
+        print(f"self.imgs: {len(self.imgs)}")
+        LOGGER.info("You are using cached images in RAM to accelerate training!")
+        LOGGER.info("Caching images...\n" "This might take some time for your dataset")
+        num_threads = min(16, max(1, os.cpu_count() - 1))
+        load_imgs = ThreadPool(num_threads).imap(self.load_image, range(num_imgs))
+        pbar = tqdm(enumerate(load_imgs), total=num_imgs, disable=self.rank > 0)
+        for i, (x, (h0, w0), shape) in pbar:
+            self.imgs[i], self.imgs_hw0[i], self.imgs_hw[i] = x, (h0, w0), shape
+
+    def __del__(self):
+        if self.cache_ram:
+            del self.imgs
+
+    def cal_cache_occupy(self, num_imgs):
+        """estimate the memory required to cache images in RAM."""
+        cache_bytes = 0
+        num_imgs = len(self.img_paths)
+        num_samples = min(num_imgs, 32)
+        for _ in range(num_samples):
+            img, _, _ = self.load_image(
+                index=random.randint(0, len(self.img_paths) - 1)
+            )
+            cache_bytes += img.nbytes
+        mem_required = cache_bytes * num_imgs / num_samples
+        return mem_required
 
     def __len__(self):
         """Get the length of dataset"""
@@ -204,29 +263,35 @@ class TrainValDataset(Dataset):
             Image, original shape of image, resized image shape
         """
         path = self.img_paths[index]
-        try:
-            im = cv2.imread(path)
-            assert (
-                im is not None
-            ), f"opencv cannot read image correctly or {path} not exists"
-        except:
-            im = cv2.cvtColor(np.asarray(Image.open(path)), cv2.COLOR_RGB2BGR)
-            assert im is not None, f"Image Not Found {path}, workdir: {os.getcwd()}"
-
-        h0, w0 = im.shape[:2]  # origin shape
-        if force_load_size:
-            r = force_load_size / max(h0, w0)
+        if self.cache_ram and self.imgs[index] is not None:
+            im = self.imgs[index]
+            # im = copy.deepcopy(im)
+            return self.imgs[index], self.imgs_hw0[index], self.imgs_hw[index]
         else:
-            r = self.img_size / max(h0, w0)
-        if r != 1:
-            im = cv2.resize(
-                im,
-                (int(w0 * r), int(h0 * r)),
-                interpolation=cv2.INTER_AREA
-                if r < 1 and not self.augment
-                else cv2.INTER_LINEAR,
-            )
-        return im, (h0, w0), im.shape[:2]
+            try:
+                im = cv2.imread(path)
+                assert (
+                    im is not None
+                ), f"opencv cannot read image correctly or {path} not exists"
+            except Exception as e:
+                print(e)
+                im = cv2.cvtColor(np.asarray(Image.open(path)), cv2.COLOR_RGB2BGR)
+                assert im is not None, f"Image Not Found {path}, workdir: {os.getcwd()}"
+
+            h0, w0 = im.shape[:2]  # origin shape
+            if force_load_size:
+                r = force_load_size / max(h0, w0)
+            else:
+                r = self.img_size / max(h0, w0)
+            if r != 1:
+                im = cv2.resize(
+                    im,
+                    (int(w0 * r), int(h0 * r)),
+                    interpolation=cv2.INTER_AREA
+                    if r < 1 and not self.augment
+                    else cv2.INTER_LINEAR,
+                )
+            return im, (h0, w0), im.shape[:2]
 
     @staticmethod
     def collate_fn(batch):

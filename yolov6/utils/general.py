@@ -4,6 +4,7 @@ import os
 import glob
 import torch
 from pathlib import Path
+import pkg_resources as pkg
 
 
 def increment_name(path):
