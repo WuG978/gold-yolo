@@ -7,33 +7,35 @@ from pathlib import Path
 
 
 def increment_name(path):
-    '''increase save directory's id'''
+    """increase save directory's id"""
     path = Path(path)
-    sep = ''
+    sep = ""
     if path.exists():
-        path, suffix = (path.with_suffix(''), path.suffix) if path.is_file() else (path, '')
+        path, suffix = (
+            (path.with_suffix(""), path.suffix) if path.is_file() else (path, "")
+        )
         for n in range(1, 9999):
-            p = f'{path}{sep}{n}{suffix}'
+            p = f"{path}{sep}{n}{suffix}"
             if not os.path.exists(p):
                 break
         path = Path(p)
     return path
 
 
-def find_latest_checkpoint(search_dir='.'):
-    '''Find the most recent saved checkpoint in search_dir.'''
-    checkpoint_list = glob.glob(f'{search_dir}/**/last*.pt', recursive=True)
-    return max(checkpoint_list, key=os.path.getctime) if checkpoint_list else ''
+def find_latest_checkpoint(search_dir="."):
+    """Find the most recent saved checkpoint in search_dir."""
+    checkpoint_list = glob.glob(f"{search_dir}/**/last*.pt", recursive=True)
+    return max(checkpoint_list, key=os.path.getctime) if checkpoint_list else ""
 
 
-def dist2bbox(distance, anchor_points, box_format='xyxy'):
-    '''Transform distance(ltrb) to box(xywh or xyxy).'''
+def dist2bbox(distance, anchor_points, box_format="xyxy"):
+    """Transform distance(ltrb) to box(xywh or xyxy)."""
     lt, rb = torch.split(distance, 2, -1)
     x1y1 = anchor_points - lt
     x2y2 = anchor_points + rb
-    if box_format == 'xyxy':
+    if box_format == "xyxy":
         bbox = torch.cat([x1y1, x2y2], -1)
-    elif box_format == 'xywh':
+    elif box_format == "xywh":
         c_xy = (x1y1 + x2y2) / 2
         wh = x2y2 - x1y1
         bbox = torch.cat([c_xy, wh], -1)
@@ -41,7 +43,7 @@ def dist2bbox(distance, anchor_points, box_format='xyxy'):
 
 
 def bbox2dist(anchor_points, bbox, reg_max):
-    '''Transform bbox(xyxy) to dist(ltrb).'''
+    """Transform bbox(xyxy) to dist(ltrb)."""
     x1y1, x2y2 = torch.split(bbox, 2, -1)
     lt = anchor_points - x1y1
     rb = x2y2 - anchor_points
@@ -50,12 +52,13 @@ def bbox2dist(anchor_points, bbox, reg_max):
 
 
 def xywh2xyxy(bboxes):
-    '''Transform bbox(xywh) to box(xyxy).'''
+    """Transform bbox(xywh) to box(xyxy)."""
     bboxes[..., 0] = bboxes[..., 0] - bboxes[..., 2] * 0.5
     bboxes[..., 1] = bboxes[..., 1] - bboxes[..., 3] * 0.5
     bboxes[..., 2] = bboxes[..., 0] + bboxes[..., 2]
     bboxes[..., 3] = bboxes[..., 1] + bboxes[..., 3]
     return bboxes
+
 
 def box_iou(box1, box2):
     # https://github.com/pytorch/vision/blob/master/torchvision/ops/boxes.py
@@ -78,5 +81,31 @@ def box_iou(box1, box2):
     area2 = box_area(box2.T)
 
     # inter(N,M) = (rb(N,M,2) - lt(N,M,2)).clamp(0).prod(2)
-    inter = (torch.min(box1[:, None, 2:], box2[:, 2:]) - torch.max(box1[:, None, :2], box2[:, :2])).clamp(0).prod(2)
-    return inter / (area1[:, None] + area2 - inter)  # iou = inter / (area1 + area2 - inter)
+    inter = (
+        (
+            torch.min(box1[:, None, 2:], box2[:, 2:])
+            - torch.max(box1[:, None, :2], box2[:, :2])
+        )
+        .clamp(0)
+        .prod(2)
+    )
+    return inter / (
+        area1[:, None] + area2 - inter
+    )  # iou = inter / (area1 + area2 - inter)
+
+
+def check_version(
+    current="0.0.0",
+    minimum="0.0.0",
+    name="version ",
+    pinned=False,
+    hard=False,
+    verbose=False,
+):
+    # Check whether the package's version is match the required version.
+    current, minimum = (pkg.parse_version(x) for x in (current, minimum))
+    result = (current == minimum) if pinned else (current >= minimum)  # bool
+    if hard:
+        info = f"⚠️ {name}{minimum} is required by YOLOv6, but {name}{current} is currently installed"
+        assert result, info  # assert minimum version requirement
+    return result
