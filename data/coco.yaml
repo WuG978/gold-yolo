@@ -1,8 +1,14 @@
 # COCO 2017 dataset http://cocodataset.org
-train: dataset/coco-yolo/images/train2017 # 118287 images
-val: dataset/coco-yolo/images/val2017  # 5000 images
-test: dataset/coco-yolo/images/test2017
-anno_path: dataset/coco-yolo/annotations/instances_val2017.json
+
+# If you are using Windows system,
+# the dataset path should be like this:
+# train: d:\dataset\coco\images\train2017
+# because windows use "\" as separator, linux use "/" as separator.
+
+train: ../coco/images/train2017 # 118287 images
+val: ../coco/images/val2017  # 5000 images
+test: ../coco/images/test2017
+anno_path: ../coco/annotations/instances_val2017.json
 
 # number of classes
 nc: 80
