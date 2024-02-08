@@ -34,12 +34,15 @@ def get_args_parser(add_help=True):
     )
     parser.add_argument(
         "--conf-file",
-        default="./configs/gold_yolo-l_pre.py",
+        default="./configs/gold_yolo-n.py",
         type=str,
         help="experiments description file",
     )
     parser.add_argument(
-        "--use_syncbn", action="store_true", default=True, help="whether use syncbn in training"
+        "--use_syncbn",
+        action="store_true",
+        default=True,
+        help="whether use syncbn in training",
     )
     parser.add_argument(
         "--img-size", default=640, type=int, help="train, val image size (pixels)"
@@ -48,7 +51,7 @@ def get_args_parser(add_help=True):
         "--batch-size", default=16, type=int, help="total batch size for all GPUs"
     )
     parser.add_argument(
-        "--epochs", default=400, type=int, help="number of total epochs to run"
+        "--epochs", default=300, type=int, help="number of total epochs to run"
     )
     parser.add_argument(
         "--workers",
@@ -58,13 +61,13 @@ def get_args_parser(add_help=True):
     )
     parser.add_argument(
         "--device",
-        default="0,1",
+        default="cpu",
         type=str,
         help="cuda device, i.e. 0 or 0,1,2,3 or cpu",
     )
     parser.add_argument(
         "--eval-interval",
-        default=20,
+        default=1,
         type=int,
         help="evaluate at every interval epochs",
     )
@@ -82,13 +85,13 @@ def get_args_parser(add_help=True):
     parser.add_argument(
         "--check-images",
         action="store_true",
-        # default=True,
+        default=True,
         help="check images when initializing datasets",
     )
     parser.add_argument(
         "--check-labels",
         action="store_true",
-        # default=True,
+        default=True,
         help="check label files when initializing datasets",
     )
     parser.add_argument(
@@ -96,8 +99,8 @@ def get_args_parser(add_help=True):
     )
     parser.add_argument(
         "--name",
-        # default="exp",
-        default="gold_yolo-l_pre_bs16_syncbn_fuseab_linearatten",
+        default="exp",
+        # default="gold_yolo-n_bs16_syncbn_fuseab",
         type=str,
         help="experiment name, saved to output_dir/name",
     )
@@ -113,7 +116,7 @@ def get_args_parser(add_help=True):
         "--resume",
         nargs="?",
         const=True,
-        default=False,
+        # default=True,
         help="resume the most recent training",
     )
     parser.add_argument(
@@ -153,13 +156,14 @@ def get_args_parser(add_help=True):
     )
     parser.add_argument(
         "--bs_per_gpu",
-        default=8,
+        default=16,
         type=int,
         help="batch size per GPU for auto-rescale learning rate, set to 16 for P6 models",
     )
     parser.add_argument(
         "--cache-ram",
         action="store_true",
+        default=True,
         help="whether to cache images into RAM to speed up training",
     )
     args = parser.parse_args()

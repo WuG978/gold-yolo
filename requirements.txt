@@ -16,5 +16,6 @@ onnx-simplifier>=0.3.6 # ONNX simplifier
 thop  # FLOPs computation
 seaborn
 einops
+psutil
 mmcv==1.5.0
 # pytorch_quantization>=2.1.1
