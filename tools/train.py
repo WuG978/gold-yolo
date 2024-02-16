@@ -157,6 +157,11 @@ def get_args_parser(add_help=True):
         type=int,
         help="batch size per GPU for auto-rescale learning rate, set to 16 for P6 models",
     )
+    parser.add_argument(
+        "--cache-ram",
+        action="store_true",
+        help="whether to cache images into RAM to speed up training",
+    )
     args = parser.parse_args()
     return args
 
