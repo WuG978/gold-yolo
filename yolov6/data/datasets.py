@@ -45,7 +45,8 @@ for k, v in ExifTags.TAGS.items():
 
 
 class TrainValDataset(Dataset):
-    '''YOLOv6 train_loader/val_loader, loads images and labels for training and validation.'''
+    """YOLOv6 train_loader/val_loader, loads images and labels for training and validation."""
+
     def __init__(
         self,
         img_dir,
@@ -63,7 +64,12 @@ class TrainValDataset(Dataset):
         task="train",
         cache_ram=False,
     ):
-        assert task.lower() in ("train", "val", "test", "speed"), f"Not supported task: {task}"
+        assert task.lower() in (
+            "train",
+            "val",
+            "test",
+            "speed",
+        ), f"Not supported task: {task}"
         t1 = time.time()
         self.__dict__.update(locals())
         self.main_process = self.rank in (-1, 0)
@@ -162,7 +168,9 @@ class TrainValDataset(Dataset):
         else:
             # Load image
             if self.hyp and "test_load_size" in self.hyp:
-                img, (h0, w0), (h, w) = self.load_image(index, self.hyp["test_load_size"])
+                img, (h0, w0), (h, w) = self.load_image(
+                    index, self.hyp["test_load_size"]
+                )
             else:
                 img, (h0, w0), (h, w) = self.load_image(index)
 
@@ -173,11 +181,22 @@ class TrainValDataset(Dataset):
                 else self.img_size
             )  # final letterboxed shape
             if self.hyp and "letterbox_return_int" in self.hyp:
-                img, ratio, pad = letterbox(img, shape, auto=False, scaleup=self.augment, return_int=self.hyp["letterbox_return_int"])
+                img, ratio, pad = letterbox(
+                    img,
+                    shape,
+                    auto=False,
+                    scaleup=self.augment,
+                    return_int=self.hyp["letterbox_return_int"],
+                )
             else:
-                img, ratio, pad = letterbox(img, shape, auto=False, scaleup=self.augment)
+                img, ratio, pad = letterbox(
+                    img, shape, auto=False, scaleup=self.augment
+                )
 
-            shapes = (h0, w0), ((h * ratio / h0, w * ratio / w0), pad)  # for COCO mAP rescaling
+            shapes = (h0, w0), (
+                (h * ratio / h0, w * ratio / w0),
+                pad,
+            )  # for COCO mAP rescaling
 
             labels = self.labels[index].copy()
             if labels.size:
@@ -244,16 +263,10 @@ class TrainValDataset(Dataset):
             Image, original shape of image, resized image shape
         """
         path = self.img_paths[index]
-        try:
-            im = cv2.imread(path)
-            assert im is not None, f"opencv cannot read image correctly or {path} not exists"
-        except:
-            im = cv2.cvtColor(np.asarray(Image.open(path)), cv2.COLOR_RGB2BGR)
-            assert im is not None, f"Image Not Found {path}, workdir: {os.getcwd()}"
-
-        h0, w0 = im.shape[:2]  # origin shape
-        if force_load_size:
-            r = force_load_size / max(h0, w0)
+        if self.cache_ram and self.imgs[index] is not None:
+            im = self.imgs[index]
+            # im = copy.deepcopy(im)
+            return self.imgs[index], self.imgs_hw0[index], self.imgs_hw[index]
         else:
             try:
                 im = cv2.imread(path)
@@ -289,7 +302,6 @@ class TrainValDataset(Dataset):
         return torch.stack(img, 0), torch.cat(label, 0), path, shapes
 
     def get_imgs_labels(self, img_dir):
-
         assert osp.exists(img_dir), f"{img_dir} is an invalid directory path!"
         valid_img_record = osp.join(
             osp.dirname(img_dir), "." + osp.basename(img_dir) + ".json"
@@ -298,7 +310,9 @@ class TrainValDataset(Dataset):
 
         img_paths = glob.glob(osp.join(img_dir, "**/*"), recursive=True)
         img_paths = sorted(
-            p for p in img_paths if p.split(".")[-1].lower() in IMG_FORMATS and os.path.isfile(p)
+            p
+            for p in img_paths
+            if p.split(".")[-1].lower() in IMG_FORMATS and os.path.isfile(p)
         )
         assert img_paths, f"No images found in {img_dir}."
 
@@ -345,23 +359,23 @@ class TrainValDataset(Dataset):
         base_dir = osp.basename(img_dir)
         if base_dir != "":
             label_dir = osp.join(
-            osp.dirname(osp.dirname(img_dir)), "labels", osp.basename(img_dir)
+                osp.dirname(osp.dirname(img_dir)), "labels", osp.basename(img_dir)
             )
             assert osp.exists(label_dir), f"{label_dir} is an invalid directory path!"
         else:
-            sub_dirs= []
+            sub_dirs = []
             label_dir = img_dir
             for rootdir, dirs, files in os.walk(label_dir):
                 for subdir in dirs:
                     sub_dirs.append(subdir)
             assert "labels" in sub_dirs, f"Could not find a labels directory!"
 
-
         # Look for labels in the save relative dir that the images are in
         def _new_rel_path_with_ext(base_path: str, full_path: str, new_ext: str):
             rel_path = osp.relpath(full_path, base_path)
-            return osp.join(osp.dirname(rel_path), osp.splitext(osp.basename(rel_path))[0] + new_ext)
-
+            return osp.join(
+                osp.dirname(rel_path), osp.splitext(osp.basename(rel_path))[0] + new_ext
+            )
 
         img_paths = list(img_info.keys())
         label_paths = sorted(
@@ -417,8 +431,12 @@ class TrainValDataset(Dataset):
                 )
 
         if self.task.lower() == "val":
-            if self.data_dict.get("is_coco", False): # use original json file when evaluating on coco dataset.
-                assert osp.exists(self.data_dict["anno_path"]), "Eval on coco dataset must provide valid path of the annotation file in config file: data/coco.yaml"
+            if self.data_dict.get(
+                "is_coco", False
+            ):  # use original json file when evaluating on coco dataset.
+                assert osp.exists(
+                    self.data_dict["anno_path"]
+                ), "Eval on coco dataset must provide valid path of the annotation file in config file: data/coco.yaml"
             else:
                 assert (
                     self.class_names
@@ -498,7 +516,7 @@ class TrainValDataset(Dataset):
         return img, labels
 
     def sort_files_shapes(self):
-        '''Sort by aspect ratio.'''
+        """Sort by aspect ratio."""
         batch_num = self.batch_indices[-1] + 1
         s = self.shapes  # wh
         ar = s[:, 1] / s[:, 0]  # aspect ratio
@@ -517,6 +535,7 @@ class TrainValDataset(Dataset):
                 shapes[i] = [maxi, 1]
             elif mini > 1:
                 shapes[i] = [1, 1 / mini]
+        # self.batch_shapes = [self.img_size, self.img_size] * batch_num
         self.batch_shapes = (
             np.ceil(np.array(shapes) * self.img_size / self.stride + self.pad).astype(
                 np.int_
@@ -526,7 +545,7 @@ class TrainValDataset(Dataset):
 
     @staticmethod
     def check_image(im_file):
-        '''Verify an image.'''
+        """Verify an image."""
         nc, msg = 0, ""
         try:
             im = Image.open(im_file)
@@ -670,22 +689,24 @@ class LoadData:
     def __init__(self, path, webcam, webcam_addr):
         self.webcam = webcam
         self.webcam_addr = webcam_addr
-        if webcam: # if use web camera
+        if webcam:  # if use web camera
             imgp = []
             vidp = [int(webcam_addr) if webcam_addr.isdigit() else webcam_addr]
         else:
             p = str(Path(path).resolve())  # os-agnostic absolute path
             if os.path.isdir(p):
-                files = sorted(glob.glob(os.path.join(p, '**/*.*'), recursive=True))  # dir
+                files = sorted(
+                    glob.glob(os.path.join(p, "**/*.*"), recursive=True)
+                )  # dir
             elif os.path.isfile(p):
                 files = [p]  # files
             else:
-                raise FileNotFoundError(f'Invalid path {p}')
-            imgp = [i for i in files if i.split('.')[-1] in IMG_FORMATS]
-            vidp = [v for v in files if v.split('.')[-1] in VID_FORMATS]
+                raise FileNotFoundError(f"Invalid path {p}")
+            imgp = [i for i in files if i.split(".")[-1] in IMG_FORMATS]
+            vidp = [v for v in files if v.split(".")[-1] in VID_FORMATS]
         self.files = imgp + vidp
         self.nf = len(self.files)
-        self.type = 'image'
+        self.type = "image"
         if len(vidp) > 0:
             self.add_video(vidp[0])  # new video
         else:
@@ -694,9 +715,11 @@ class LoadData:
     # @staticmethod
     def checkext(self, path):
         if self.webcam:
-            file_type = 'video'
+            file_type = "video"
         else:
-            file_type = 'image' if path.split('.')[-1].lower() in IMG_FORMATS else 'video'
+            file_type = (
+                "image" if path.split(".")[-1].lower() in IMG_FORMATS else "video"
+            )
         return file_type
 
     def __iter__(self):
@@ -707,8 +730,8 @@ class LoadData:
         if self.count == self.nf:
             raise StopIteration
         path = self.files[self.count]
-        if self.checkext(path) == 'video':
-            self.type = 'video'
+        if self.checkext(path) == "video":
+            self.type = "video"
             ret_val, img = self.cap.read()
             while not ret_val:
                 self.count += 1
@@ -723,11 +746,11 @@ class LoadData:
             self.count += 1
             img = cv2.imread(path)  # BGR
         return img, path, self.cap
-        
+
     def add_video(self, path):
         self.frame = 0
         self.cap = cv2.VideoCapture(path)
         self.frames = int(self.cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        
+
     def __len__(self):
         return self.nf  # number of files
